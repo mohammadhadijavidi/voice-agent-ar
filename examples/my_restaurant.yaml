@@ -1,0 +1,39 @@
+# Template for your own restaurant. Run with: PROFILE=examples/my_restaurant.yaml voice-agent-ar serve
+name: My Restaurant                     # English / legal name (used in logs and CRM events)
+names: {ar: مطعمي, en: My Restaurant}    # what the agent says
+kind: restaurant
+agent_name: مريم
+dialect: gulf                           # gulf (Emirati/Khaleeji) | msa (formal Arabic)
+default_language: ar
+languages: [ar, en]
+timezone: Asia/Dubai
+currency: AED
+address:
+  ar: "اكتب العنوان كما تحب أن يقوله المساعد"
+  en: "Your address"
+# Comma-separated shifts. "24:00" = midnight. "closed" for closed days.
+hours:
+  mon: "12:00-15:30,18:00-24:00"
+  tue: "12:00-15:30,18:00-24:00"
+  wed: "12:00-15:30,18:00-24:00"
+  thu: "12:00-15:30,18:00-24:00"
+  fri: "13:30-24:00"
+  sat: "12:00-24:00"
+  sun: "12:00-23:00"
+slot_minutes: 30            # booking grid
+dining_minutes: 90          # how long a table is held
+min_notice_minutes: 30
+booking_horizon_days: 60
+max_party_size: 12          # bigger groups are offered a transfer
+areas:                      # seats per area for one sitting (indoor / outdoor / family are understood in Gulf Arabic)
+  indoor: 40
+  outdoor: 24
+  family: 20
+callback_number: "04 000 0000"     # printed in the WhatsApp / SMS confirmation
+transfer_number: ""                # E.164 staff line, or set TRANSFER_NUMBER
+stt_hints: [اسم المطعم, باجر, طاولة, الجلسات الخارجية]
+greeting:
+  ar: "مساء الخير، مطعمي، معك مريم. شلون أقدر أساعدك؟"
+  en: "Good evening, My Restaurant, this is Maryam. How can I help?"
+instructions: |
+  Anything the agent must know: dress code, kids' area, parking, Ramadan iftar timing, deposits for groups.

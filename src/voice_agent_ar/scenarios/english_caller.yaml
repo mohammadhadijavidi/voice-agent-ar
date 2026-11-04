@@ -1,0 +1,10 @@
+name: english_caller
+profile: restaurant
+description: An English-speaking caller is answered in English with the same flow.
+caller: "+971509998877"
+steps:
+  - say: "Hi, I'd like to book a table for two on Saturday at 7:30 pm"
+  - say: "My name is Sarah"
+  - say: "Yes, that's right"
+  - say: "No thanks"
+  - say: "Bye"

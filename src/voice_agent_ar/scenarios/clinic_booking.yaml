@@ -1,0 +1,11 @@
+name: clinic_booking
+profile: clinic
+description: Patient books a teeth cleaning on Saturday morning, corrects the time at read-back, WhatsApp summary.
+caller: "+971585556677"
+steps:
+  - say: "هلا، ابي موعد تنظيف اسنان يوم السبت الصبح الساعة عشر"
+  - say: "اسمي سارة احمد"
+  - say: "لا خلها الساعة احدعش"
+  - say: "ايه تمام"
+  - say: "ايه"
+  - say: "يعطيك العافية مع السلامة"

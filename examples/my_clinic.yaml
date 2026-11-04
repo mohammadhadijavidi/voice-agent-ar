@@ -1,0 +1,39 @@
+# Template for your own clinic. Run with: PROFILE=examples/my_clinic.yaml voice-agent-ar serve
+name: My Clinic
+names: {ar: عيادتي, en: My Clinic}
+kind: clinic
+agent_name: نورة
+dialect: gulf
+default_language: ar
+languages: [ar, en]
+timezone: Asia/Dubai
+currency: AED
+address: {ar: "العنوان", en: "Address"}
+hours:
+  mon: "09:00-13:00,16:00-21:00"
+  tue: "09:00-13:00,16:00-21:00"
+  wed: "09:00-13:00,16:00-21:00"
+  thu: "09:00-13:00,16:00-21:00"
+  fri: "16:00-21:00"
+  sat: "10:00-18:00"
+  sun: closed
+slot_minutes: 30
+min_notice_minutes: 60
+services:                              # duration_min must fit inside a shift
+  - id: consultation
+    names: {ar: كشف عام, en: general consultation}
+    aliases: [كشف, استشارة, مراجعة]
+    duration_min: 30
+    price: 150
+doctors:                               # optional; without doctors each service is one chair
+  - id: dr_a
+    names: {ar: الدكتور أحمد, en: Dr. Ahmed}
+    services: [consultation]
+    days: [mon, tue, wed, thu, sat]
+callback_number: "04 000 0001"
+stt_hints: [كشف, الدكتور أحمد]
+greeting:
+  ar: "هلا والله، عيادتي، معك نورة. شو أقدر أخدمك؟"
+  en: "Hello, My Clinic, this is Noura. How can I help?"
+instructions: |
+  Insurance accepted, documents to bring, parking. Never give medical advice.

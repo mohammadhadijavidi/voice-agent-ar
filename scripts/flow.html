@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ar">
+<head>
+<meta charset="utf-8">
+<style>
+@font-face { font-family: "Vazirmatn"; src: url("../src/voice_agent_ar/static/fonts/Vazirmatn-Regular.ttf"); font-weight: 400; }
+@font-face { font-family: "Vazirmatn"; src: url("../src/voice_agent_ar/static/fonts/Vazirmatn-Medium.ttf"); font-weight: 500; }
+@font-face { font-family: "Vazirmatn"; src: url("../src/voice_agent_ar/static/fonts/Vazirmatn-Bold.ttf"); font-weight: 700; }
+:root { --bg:#0a0d12; --panel:#121722; --line:#263045; --text:#e8ebf2; --muted:#8d95a8; --gold:#e5b76a; --teal:#4fd1c5; --wa:#34d399; --violet:#a5b4fc; --warn:#fbbf24; }
+* { box-sizing: border-box; }
+body { margin:0; width:1600px; height:900px; background: radial-gradient(1200px 600px at 80% -10%, #16202e 0%, var(--bg) 60%); color:var(--text);
+  font-family: "Segoe UI", system-ui, sans-serif; overflow:hidden; }
+.ar { font-family: "Vazirmatn", sans-serif; direction: rtl; }
+h1 { margin: 44px 64px 6px; font-size: 34px; font-weight: 700; letter-spacing: .2px; }
+h1 span { color: var(--gold); }
+.sub { margin: 0 64px; color: var(--muted); font-size: 17px; }
+.sub .ar { color: #c9cfdc; }
+.stage { position: relative; height: 700px; margin-top: 18px; }
+.box { position:absolute; background: var(--panel); border:1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
+.box h3 { margin:0 0 6px; font-size: 17px; font-weight: 600; }
+.box p { margin: 0; color: var(--muted); font-size: 13.5px; line-height: 1.55; }
+.box .ar { font-size: 14.5px; color:#d6dbe6; line-height: 1.7; }
+.tag { display:inline-block; font-size: 11.5px; padding: 2px 8px; border-radius: 6px; background:#1b2232; color: var(--muted); margin: 6px 4px 0 0; font-family: ui-monospace, Menlo, monospace; }
+.gold { border-color:#5b4a25; box-shadow: 0 0 0 1px #2a2312 inset; }
+.gold h3 { color: var(--gold); }
+.teal h3 { color: var(--teal); }
+.wa h3 { color: var(--wa); }
+.violet h3 { color: var(--violet); }
+svg { position:absolute; inset:0; }
+.lbl { font: 12px ui-monospace, Menlo, monospace; fill: var(--muted); }
+.bubble { margin-top:8px; background:#0b1f17; border:1px solid #1c4434; border-radius: 10px; padding: 8px 10px; font-size: 13px; line-height: 1.7; color:#d7efe5; }
+.map { margin:0; direction:ltr; font-size:14px; line-height:1.9; color:#d6dbe6; }
+.map .k { font-family: ui-monospace, Menlo, monospace; color: var(--teal); font-size: 13px; }
+.map .ar { font-size: 14.5px; }
+.foot { position:absolute; left:64px; bottom: 26px; color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<h1>voice-agent-ar <span>·</span> how a call flows</h1>
+<p class="sub">Arabic-first AI phone agent for UAE restaurants and clinics &nbsp;·&nbsp; <span class="ar">وكيل صوتي عربي باللهجة الخليجية</span></p>
+<div class="stage">
+<svg width="1600" height="700" viewBox="0 0 1600 700">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5d6a86"/></marker>
+    <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e5b76a"/></marker>
+    <marker id="w" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#34d399"/></marker>
+  </defs>
+  <!-- caller -> twilio -> server -->
+  <path d="M250 120 H318" stroke="#5d6a86" stroke-width="2" fill="none" marker-end="url(#a)"/>
+  <path d="M560 120 H628" stroke="#5d6a86" stroke-width="2" fill="none" marker-end="url(#a)"/>
+  <text class="lbl" x="566" y="108">μ-law</text>
+  <text class="lbl" x="566" y="142">WS</text>
+  <!-- server -> stt -->
+  <path d="M760 205 V262" stroke="#5d6a86" stroke-width="2" fill="none" marker-end="url(#a)"/>
+  <!-- stt -> llm -->
+  <path d="M900 330 H968" stroke="#5d6a86" stroke-width="2" fill="none" marker-end="url(#a)"/>
+  <!-- llm -> tools -->
+  <path d="M1105 400 V458" stroke="#e5b76a" stroke-width="2" fill="none" marker-end="url(#g)"/>
+  <path d="M1080 458 V400" stroke="#e5b76a" stroke-width="2" fill="none" stroke-dasharray="4 4" marker-end="url(#g)"/>
+  <text class="lbl" x="1115" y="434">tool calls / results</text>
+  <!-- llm -> speak -> tts -> back -->
+  <path d="M1240 330 H1300" stroke="#5d6a86" stroke-width="2" fill="none" marker-end="url(#a)"/>
+  <path d="M1430 260 V200 H900" stroke="#5d6a86" stroke-width="2" fill="none" marker-end="url(#a)"/>
+  <text class="lbl" x="1010" y="190">TTS audio + marks · clear on barge-in</text>
+  <!-- tools -> notify -->
+  <path d="M1240 540 H1300" stroke="#34d399" stroke-width="2" fill="none" marker-end="url(#w)"/>
+  <!-- tools -> store -->
+  <path d="M968 540 H560" stroke="#5d6a86" stroke-width="2" fill="none" marker-end="url(#a)"/>
+</svg>
+
+<div class="box" style="left:64px; top:60px; width:186px;">
+  <h3>Caller</h3>
+  <p class="ar">«ابي احجز طاولة باجر الساعة ثمان ونص بالليل»</p>
+  <span class="tag">050 / 055 / 04 …</span>
+</div>
+<div class="box violet" style="left:320px; top:60px; width:240px;">
+  <h3>Twilio Voice</h3>
+  <p>UAE number → <b>&lt;Connect&gt;&lt;Stream&gt;</b> TwiML. Signed webhooks (X-Twilio-Signature), per-call stream token.</p>
+</div>
+<div class="box gold" style="left:630px; top:40px; width:270px; height:165px;">
+  <h3>Call session (FastAPI)</h3>
+  <p>20 ms frames → VAD + endpointing → utterances. Barge-in sends <b>clear</b> and keeps only what the caller actually heard in history.</p>
+</div>
+<div class="box teal" style="left:620px; top:264px; width:280px;">
+  <h3>Speech-to-text</h3>
+  <p>Deepgram · Whisper (OpenAI / Groq) with <span class="tag">language=ar</span> + business word hints.</p>
+</div>
+<div class="box gold" style="left:970px; top:250px; width:270px; height:150px;">
+  <h3>LLM receptionist</h3>
+  <p>OpenAI · Anthropic · OpenRouter · Groq · Ollama · mock. Gulf-dialect prompt, one question at a time, <b>read-back before booking</b>.</p>
+</div>
+<div class="box teal" style="left:1302px; top:262px; width:250px;">
+  <h3>Arabic speech layer</h3>
+  <p class="map"><span class="k">20:30</span> → <bdi class="ar">الساعة ثمان ونص بالليل</bdi><br>
+     <span class="k">150 AED</span> → <bdi class="ar">مية وخمسين درهم</bdi><br>
+     <span class="k">0501234567</span> → <bdi class="ar">صفر خمسة صفر، …</bdi></p>
+  <span class="tag">→ ElevenLabs / OpenAI TTS</span>
+</div>
+<div class="box gold" style="left:970px; top:460px; width:270px; height:170px;">
+  <h3>Booking tools</h3>
+  <p>Split shifts, seats per area (indoor / terrace / family), doctors &amp; services, min. notice, no double booking. Every result carries <b>spoken_*</b> Arabic.</p>
+</div>
+<div class="box wa" style="left:1302px; top:440px; width:250px;">
+  <h3>Booking summary</h3>
+  <p>WhatsApp Cloud API <b>template</b> → SMS fallback (Twilio). E.164 from UAE formats; landlines refused.</p>
+  <div class="bubble ar">هلا محمد، تم تأكيد حجزك في مطعم الفنار.<br>طاولة لـ 5 أشخاص<br>الخميس 5 نوفمبر، 8:30 مساءً<br>رقم الحجز: 46336</div>
+</div>
+<div class="box" style="left:300px; top:470px; width:260px;">
+  <h3>Call log &amp; CRM</h3>
+  <p>SQLite: transcripts, events, bookings, sent messages. Arabic RTL dashboard. Signed CRM webhooks with retry.</p>
+</div>
+<div class="box" style="left:64px; top:470px; width:210px;">
+  <h3>Tested offline</h3>
+  <p>Twilio Media Streams simulator + FSK test modem for STT/TTS. No API keys needed in CI.</p>
+</div>
+</div>
+<div class="foot">Sample booking shown is from the bundled simulated scenario (fictional restaurant, mock providers).</div>
+</body>
+</html>

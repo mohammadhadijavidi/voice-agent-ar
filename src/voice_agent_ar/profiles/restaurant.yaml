@@ -1,0 +1,40 @@
+# Fictional sample business. Replace with your own (see examples/my_restaurant.yaml).
+name: Al Fanar Grill
+names: {ar: مطعم الفنار, en: Al Fanar Grill}
+sample: true
+kind: restaurant
+agent_name: مريم
+dialect: gulf            # gulf | msa
+default_language: ar
+languages: [ar, en]
+timezone: Asia/Dubai
+currency: AED
+address:
+  ar: "مثال: الممشى، جميرا بيتش ريزيدنس، دبي (عنوان تجريبي)"
+  en: "Sample: The Walk, JBR, Dubai (sample address)"
+# Split shifts are common in the Gulf: lunch and dinner. "24:00" means midnight.
+hours:
+  mon: "12:00-15:30,18:00-24:00"
+  tue: "12:00-15:30,18:00-24:00"
+  wed: "12:00-15:30,18:00-24:00"
+  thu: "12:00-15:30,18:00-24:00"
+  fri: "13:30-24:00"
+  sat: "12:00-24:00"
+  sun: "12:00-23:00"
+slot_minutes: 30
+dining_minutes: 90
+min_notice_minutes: 30
+max_party_size: 12
+# seats per seating area for one sitting
+areas:
+  indoor: 40
+  outdoor: 24
+  family: 20
+callback_number: "04 000 0000"
+transfer_number: ""
+stt_hints: [باجر, عقب باجر, طاولة, الجلسات الخارجية, قسم العائلات, مشويات, الفنار]
+greeting:
+  ar: "مساء الخير، مطعم الفنار، معك مريم. شلون أقدر أساعدك؟"
+  en: "Good evening, Al Fanar Grill, this is Maryam. How can I help?"
+instructions: |
+  We do not take pre-orders by phone. Shisha is not served. For birthdays the guest can bring a cake.

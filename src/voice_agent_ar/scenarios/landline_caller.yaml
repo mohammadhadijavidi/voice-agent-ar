@@ -1,0 +1,10 @@
+name: landline_caller
+profile: restaurant
+description: Caller rings from a Dubai landline; WhatsApp is impossible, so the agent asks for a mobile and sends there.
+caller: "+97143334444"
+steps:
+  - say: "مساء الخير، طاولة لشخصين الليلة الساعة تسع"
+  - say: "الاسم خالد"
+  - say: "ايه"
+  - say: "ايه على الموبايل ٠٥٢ ١١١ ٢٢٣٣"
+  - say: "مشكور، فمان الله"

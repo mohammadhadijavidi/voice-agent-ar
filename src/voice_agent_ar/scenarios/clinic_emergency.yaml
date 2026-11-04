@@ -1,0 +1,7 @@
+name: clinic_emergency
+profile: clinic
+description: Caller describes an emergency; the agent gives the 998 ambulance number before anything else, then takes a message (no staff line in the sample).
+caller: "+971502220000"
+steps:
+  - say: "الو، ابوي عنده الم شديد في صدره وما يقدر يتنفس"
+  - say: "ايه حولني"

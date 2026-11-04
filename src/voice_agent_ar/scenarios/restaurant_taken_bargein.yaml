@@ -1,0 +1,17 @@
+name: restaurant_taken_bargein
+profile: restaurant
+description: 8 pm is fully booked; the caller cuts into the alternatives to take 9:30 pm on the terrace, then asks for the summary by SMS to another mobile.
+caller: "+971552223344"
+# sample seed: every seating area is full for the 8 pm sitting tomorrow
+setup_bookings:
+  - {date: "+1", time: "20:00", party_size: 40, area: indoor}
+  - {date: "+1", time: "20:00", party_size: 24, area: outdoor}
+  - {date: "+1", time: "20:00", party_size: 20, area: family}
+steps:
+  - say: "مرحبا، عندكم طاولة لاربعة اشخاص باجر الساعة ثمان؟"
+  - say: "خلاص الساعة تسع ونص برا في التراس"
+    barge_in_after_ms: 1500
+  - say: "اسمي فاطمة"
+  - say: "تمام"
+  - say: "ارسلها رسالة نصية على صفر خمسة ستة سبعة سبعة سبعة ثمانية ثمانية تسعة تسعة"
+  - say: "مع السلامة"

@@ -1,0 +1,57 @@
+# Fictional sample business. Replace with your own (see examples/my_clinic.yaml).
+name: Al Waha Dental & Family Clinic
+names: {ar: عيادة الواحة لطب الأسنان والأسرة, en: Al Waha Dental & Family Clinic}
+sample: true
+kind: clinic
+agent_name: نورة
+dialect: gulf
+default_language: ar
+languages: [ar, en]
+timezone: Asia/Dubai
+currency: AED
+address:
+  ar: "مثال: الطابق الثاني، برج الواحة، شارع الشيخ زايد، دبي (عنوان تجريبي)"
+  en: "Sample: 2nd floor, Al Waha Tower, Sheikh Zayed Road, Dubai (sample address)"
+hours:
+  mon: "09:00-13:00,16:00-21:00"
+  tue: "09:00-13:00,16:00-21:00"
+  wed: "09:00-13:00,16:00-21:00"
+  thu: "09:00-13:00,16:00-21:00"
+  fri: "16:00-21:00"
+  sat: "10:00-18:00"
+  sun: closed
+slot_minutes: 30
+min_notice_minutes: 60
+services:
+  - id: consultation
+    names: {ar: كشف عام, en: general consultation}
+    aliases: [كشف, استشارة, فحص, مراجعة, consultation, checkup, check up]
+    duration_min: 30
+    price: 150
+  - id: cleaning
+    names: {ar: تنظيف أسنان, en: teeth cleaning}
+    aliases: [تنظيف, تنظيف الاسنان, تنظيف اسنان, cleaning, scaling]
+    duration_min: 45
+    price: 300
+  - id: pediatrics
+    names: {ar: كشف أطفال, en: paediatric consultation}
+    aliases: [اطفال, طفل, ولدي, بنتي, الياهل, اليهال, pediatric, kids]
+    duration_min: 30
+    price: 200
+doctors:
+  - id: dr_salem
+    names: {ar: الدكتور سالم, en: Dr. Salem}
+    services: [consultation, cleaning]
+    days: [mon, tue, wed, thu, sat]
+  - id: dr_huda
+    names: {ar: الدكتورة هدى, en: Dr. Huda}
+    services: [consultation, pediatrics]
+    days: [mon, tue, wed, thu, fri, sat]
+callback_number: "04 000 0001"
+transfer_number: ""
+stt_hints: [كشف, تنظيف أسنان, الدكتور سالم, الدكتورة هدى, باجر, الواحة]
+greeting:
+  ar: "هلا والله، عيادة الواحة، معك نورة. شو أقدر أخدمك؟"
+  en: "Hello, Al Waha Clinic, this is Noura. How can I help?"
+instructions: |
+  Insurance: we accept most major UAE insurance cards; ask the caller to bring their Emirates ID and card.

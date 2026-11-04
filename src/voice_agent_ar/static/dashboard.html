@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>سجل المكالمات · voice-agent-ar</title>
+<style>
+@font-face { font-family: "Vazirmatn"; src: url("/static/fonts/Vazirmatn-Regular.ttf") format("truetype"); font-weight: 400; }
+@font-face { font-family: "Vazirmatn"; src: url("/static/fonts/Vazirmatn-Medium.ttf") format("truetype"); font-weight: 500; }
+@font-face { font-family: "Vazirmatn"; src: url("/static/fonts/Vazirmatn-Bold.ttf") format("truetype"); font-weight: 700; }
+:root {
+  --bg: #0a0d12; --panel: #10141b; --panel2: #151a23; --line: #222836; --text: #e8ebf2;
+  --muted: #8d95a8; --dim: #5f667a; --gold: #e5b76a; --teal: #4fd1c5; --wa: #34d399; --warn: #fbbf24;
+  --bad: #f87171; --agent: #1a2030; --caller: #10302c;
+  --font: "Vazirmatn", "Segoe UI", system-ui, sans-serif;
+  --mono: ui-monospace, "JetBrains Mono", "SF Mono", Menlo, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; }
+.app { display: grid; grid-template-rows: auto 1fr; height: 100vh; }
+header { display: flex; align-items: center; gap: 14px; padding: 14px 22px; border-bottom: 1px solid var(--line); background: var(--panel); }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; }
+.logo { width: 28px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, var(--gold), var(--teal)); display: grid; place-items: center; }
+.logo svg { width: 16px; height: 16px; }
+.biz { color: var(--muted); font-weight: 500; }
+.pill { font-size: 11.5px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
+.pill.mock { color: var(--warn); border-color: #5b4a16; background: #221c0b; }
+.pill.dry { color: var(--wa); border-color: #1d4d36; background: #0c2017; }
+.spacer { flex: 1; }
+.stats { display: flex; gap: 22px; }
+.stat b { display: block; font-size: 18px; font-weight: 700; font-family: var(--mono); }
+.stat span { color: var(--dim); font-size: 11.5px; }
+main { display: grid; grid-template-columns: 340px 1fr 350px; min-height: 0; }
+.list { border-left: 1px solid var(--line); overflow-y: auto; background: var(--panel); }
+h3 { margin: 0; padding: 14px 18px 10px; font-size: 12px; color: var(--dim); font-weight: 500; }
+.call { padding: 12px 18px; border-bottom: 1px solid #191d28; cursor: pointer; display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; }
+.call:hover { background: var(--panel2); }
+.call.sel { background: #161f27; box-shadow: inset -3px 0 0 var(--gold); }
+.call .num { font-family: var(--mono); font-size: 13px; text-align: right; }
+.call .time { color: var(--dim); font-size: 12px; }
+.call .sum { grid-column: 1 / -1; color: var(--muted); font-size: 12.5px; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.tags { grid-column: 1 / -1; display: flex; gap: 6px; flex-wrap: wrap; margin-top: 2px; }
+.tag { font-size: 11px; padding: 2px 8px; border-radius: 5px; background: #1b2030; color: var(--muted); }
+.tag.booked { background: #2a2312; color: var(--gold); }
+.tag.transferred { background: #1e1b3a; color: #a5b4fc; }
+.tag.barge { background: #2a2110; color: var(--warn); }
+.tag.wa { background: #0d261b; color: var(--wa); }
+.tag.lang { font-family: var(--mono); text-transform: uppercase; }
+.convo { display: flex; flex-direction: column; min-height: 0; }
+.convo-head { padding: 15px 26px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 14px; }
+.convo-head h2 { margin: 0; font-size: 16px; font-weight: 600; font-family: var(--mono); direction: ltr; }
+.convo-head .meta { color: var(--muted); font-size: 12.5px; }
+.transcript { flex: 1; overflow-y: auto; padding: 22px 26px 30px; display: flex; flex-direction: column; gap: 11px; }
+.msg { max-width: 74%; padding: 10px 15px; border-radius: 14px; line-height: 1.75; font-size: 15px; }
+.msg .who { font-size: 11px; color: var(--dim); margin-bottom: 2px; }
+.msg.assistant { background: var(--agent); align-self: flex-start; border-top-right-radius: 4px; }
+.msg.user { background: var(--caller); align-self: flex-end; border-top-left-radius: 4px; }
+.msg[dir="ltr"] { font-family: "Segoe UI", system-ui, sans-serif; font-size: 14px; }
+.msg.cut { border: 1px dashed #6b5414; }
+.msg .unheard { color: var(--dim); text-decoration: line-through; text-decoration-color: #6b5414; }
+.msg .cutnote { display: block; margin-top: 4px; font-size: 11.5px; color: var(--warn); }
+.ev { align-self: center; font-size: 12px; color: var(--muted); background: #11151e; border: 1px solid var(--line); border-radius: 8px; padding: 5px 11px; max-width: 90%; direction: ltr; font-family: var(--mono); }
+.ev .k { color: var(--teal); }
+.ev.barge .k { color: var(--warn); }
+.ev.wa .k { color: var(--wa); }
+.ev .r { color: var(--gold); }
+.side { border-right: 1px solid var(--line); overflow-y: auto; background: var(--panel); }
+.card { margin: 0 14px 14px; padding: 14px; background: var(--panel2); border: 1px solid var(--line); border-radius: 10px; }
+.card p { margin: 0; line-height: 1.7; color: #cfd5e2; }
+.bk { display: grid; gap: 4px; }
+.bk .t { display: flex; justify-content: space-between; align-items: baseline; }
+.bk b { font-size: 15px; }
+.bk .code { font-family: var(--mono); color: var(--gold); font-size: 14px; letter-spacing: 1px; }
+.bk span { color: var(--muted); font-size: 13px; }
+.wa-msg { background: #0b1f17; border: 1px solid #1c4434; border-radius: 10px; padding: 10px 12px; line-height: 1.75; font-size: 13.5px; white-space: pre-line; }
+.wa-meta { display: flex; justify-content: space-between; margin-top: 8px; font-size: 11.5px; color: var(--dim); }
+.wa-meta .st { color: var(--wa); }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 7px 14px; font-size: 13px; }
+.kv dt { color: var(--dim); }
+.kv dd { margin: 0; font-family: var(--mono); font-size: 12.5px; text-align: left; direction: ltr; }
+.empty { color: var(--dim); padding: 40px; text-align: center; }
+.note { margin: 0 14px 14px; font-size: 11.5px; color: var(--dim); line-height: 1.6; }
+@media (max-width: 1100px) { main { grid-template-columns: 290px 1fr; } .side { display: none; } }
+@media (max-width: 720px) { main { grid-template-columns: 1fr; } .list { max-height: 40vh; } .stats { display: none; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">
+      <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#0a0d12" stroke-width="2.6" stroke-linecap="round"><path d="M4 12h2M8 8v8M12 5v14M16 8v8M20 12h0"/></svg></div>
+      <span dir="ltr">voice-agent-ar</span> <span class="biz" id="biz"></span>
+    </div>
+    <span class="pill" id="providers" dir="ltr"></span>
+    <span class="pill mock" id="mockpill" hidden>مزودات تجريبية (mock) · مكالمات محاكاة</span>
+    <span class="pill dry" id="drypill" hidden>واتساب/SMS: وضع التجربة، لا يُرسل شيء</span>
+    <div class="spacer"></div>
+    <div class="stats" id="stats"></div>
+  </header>
+  <main>
+    <section class="list"><h3>المكالمات</h3><div id="calls"></div></section>
+    <section class="convo">
+      <div class="convo-head" id="head"></div>
+      <div class="transcript" id="transcript"><div class="empty">اختر مكالمة</div></div>
+    </section>
+    <aside class="side" id="side"></aside>
+  </main>
+</div>
+<script>
+const qs = new URLSearchParams(location.search);
+const token = qs.get("token");
+const api = (p) => fetch(p, { headers: token ? { Authorization: "Bearer " + token } : {} }).then(r => r.json());
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const rtl = (s) => /[؀-ۿ]/.test(s || "");
+const fmtTime = (ts) => new Date(ts * 1000).toLocaleString("ar-AE-u-nu-latn", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+const dur = (c) => c.ended_at ? Math.round(c.ended_at - c.started_at) + " ث" : "مباشر";
+const OUTCOME = { booked: "تم الحجز", transferred: "تحويل لموظف", completed: "انتهت", caller_hangup: "أغلق المتصل" };
+const AREA = { indoor: "الصالة الداخلية", outdoor: "الجلسات الخارجية", family: "قسم العائلات" };
+const STATUS = { dry_run: "وضع التجربة (لم يُرسل)", sent: "أُرسل", failed: "فشل" };
+let selected = qs.get("call");
+
+async function loadHeader() {
+  const [info, st] = await Promise.all([api("/api/info"), api("/api/stats")]);
+  document.getElementById("biz").textContent = "· " + info.business + (info.sample_profile ? " (نشاط تجريبي)" : "");
+  document.getElementById("providers").textContent = `STT ${info.providers.stt} · LLM ${info.providers.llm} · TTS ${info.providers.tts} · ${info.dialect}`;
+  document.getElementById("mockpill").hidden = !info.mock;
+  document.getElementById("drypill").hidden = !(info.notify && info.notify.dry_run);
+  document.getElementById("stats").innerHTML = [
+    [st.calls || 0, "مكالمات"], [st.bookings || 0, "حجوزات"], [st.notifications_sent || 0, "تأكيدات"],
+    [st.barge_ins || 0, "مقاطعات"], [st.transfers || 0, "تحويلات"],
+  ].map(([v, k]) => `<div class="stat"><b>${v}</b><span>${k}</span></div>`).join("");
+}
+
+async function loadCalls() {
+  const calls = await api("/api/calls");
+  const el = document.getElementById("calls");
+  if (!calls.length) { el.innerHTML = '<div class="empty">لا توجد مكالمات بعد. شغّل <code dir="ltr">voice-agent-ar simulate all</code></div>'; return; }
+  if (!selected) selected = calls[0].id;
+  el.innerHTML = calls.map(c => `
+    <div class="call ${c.id === selected ? "sel" : ""}" data-id="${c.id}">
+      <div class="num" dir="ltr">${esc(c.from_number || "unknown")}</div><div class="time">${fmtTime(c.started_at)} · ${dur(c)}</div>
+      <div class="sum" dir="auto">${esc((c.summary || (c.status === "in_progress" ? "مكالمة جارية…" : "")).replace("[ملخص تجريبي من mock] ", ""))}</div>
+      <div class="tags">
+        <span class="tag lang">${esc(c.language)}</span>
+        ${c.outcome ? `<span class="tag ${esc(c.outcome)}">${esc(OUTCOME[c.outcome] || c.outcome)}</span>` : ""}
+        ${c.barge_ins ? `<span class="tag barge">مقاطعة ${c.barge_ins}</span>` : ""}
+        ${c.simulated ? `<span class="tag">محاكاة</span>` : ""}
+      </div>
+    </div>`).join("");
+  el.querySelectorAll(".call").forEach(n => n.onclick = () => { selected = n.dataset.id; loadCalls(); loadCall(); });
+}
+
+function eventLine(e) {
+  const d = e.data || {};
+  if (e.kind === "tool_call") {
+    const args = Object.entries(d.arguments || {}).filter(([k]) => k !== "customer_name").map(([k, v]) => `${k}=${JSON.stringify(v)}`).join(", ");
+    const r = d.result || {};
+    const res = r.error ? "error: " + r.error : r.booked ? `booked #${r.code}` : r.booked === false ? r.reason
+      : r.available === true ? "available" + (r.area ? " · " + r.area : r.doctor ? " · " + r.doctor : "")
+      : r.available === false ? (r.reason || "not available") + (r.alternatives ? " → " + r.alternatives.map(a => a.time).join(", ") : "")
+      : r.dry_run ? `${r.channel} dry-run → ${r.to}` : r.sent ? `${r.channel} sent → ${r.to}`
+      : r.transferred !== undefined ? (r.transferred ? "transferring" : "no staff line") : r.reason || "ok";
+    const cls = d.name === "send_booking_summary" ? "tool wa" : "tool";
+    return `<div class="ev ${cls}"><span class="k">${esc(d.name)}</span>(${esc(args)}) <span class="r">→ ${esc(res)}</span></div>`;
+  }
+  if (e.kind === "barge_in") return `<div class="ev barge"><span class="k">barge-in</span> caller spoke over the agent · clear sent · ${d.heard_sentences}/${d.sent_sentences} sentences heard</div>`;
+  if (e.kind === "language_switch") return `<div class="ev"><span class="k">language</span> ${esc(d.from)} → ${esc(d.to)}</div>`;
+  if (e.kind === "transfer" || e.kind === "hangup") return `<div class="ev"><span class="k">${e.kind}</span> ${esc(d.number || d.reason || "")}</div>`;
+  if (e.kind === "error") return `<div class="ev barge"><span class="k">error</span> ${esc(d.stage)}: ${esc(d.error)}</div>`;
+  return "";
+}
+
+function waBubble(n) {
+  const p = (n.request && n.request.json) ? n.request.json.template.components[0].parameters.map(x => x.text) : null;
+  const text = p ? `هلا ${p[0]}، تم تأكيد حجزك في ${p[1]}.\n${p[2]}\nالموعد: ${p[3]}\nرقم الحجز: ${p[4]}\nللتعديل أو الإلغاء اتصل على ${p[5]}.` : n.body;
+  const ch = n.channel === "whatsapp" ? "قالب واتساب" : "رسالة SMS";
+  return `<div class="card"><div class="wa-msg">${esc(text)}</div>
+    <div class="wa-meta"><span>${ch} · <span dir="ltr" style="unicode-bidi:isolate">${esc(n.to_number)}</span></span><span class="st">${esc(STATUS[n.status] || n.status)}</span></div></div>`;
+}
+
+async function loadCall() {
+  if (!selected) return;
+  const d = await api("/api/calls/" + selected);
+  const c = d.call;
+  document.getElementById("head").innerHTML = `<h2>${esc(c.from_number || "unknown")}</h2>
+    <span class="meta">${fmtTime(c.started_at)} · ${dur(c)} · ${c.turns} أدوار للمتصل</span>
+    ${c.simulated ? '<span class="pill mock">مكالمة محاكاة</span>' : ""}`;
+  const cutTurns = d.turns.filter(t => t.interrupted);
+  const barges = d.events.filter(e => e.kind === "barge_in");
+  cutTurns.forEach(t => { const b = barges.find(e => e.ts >= t.ts); if (b) t.unheard = b.data.unheard; });
+  const items = [...d.turns.map(t => ({ ts: t.ts, type: "turn", t })), ...d.events.map(e => ({ ts: e.ts, type: "ev", e }))]
+    .sort((a, b) => a.ts - b.ts || (a.type === "turn" ? -1 : 1));
+  document.getElementById("transcript").innerHTML = items.map(i => {
+    if (i.type === "ev") return eventLine(i.e);
+    const t = i.t;
+    const text = t.text.replace(/\s*—$/, "");
+    const unheard = t.interrupted && t.unheard ? ` <span class="unheard">${esc(t.unheard)}</span>` : "";
+    return `<div class="msg ${t.role} ${t.interrupted ? "cut" : ""}" dir="${rtl(t.text + (t.unheard || "")) ? "rtl" : "ltr"}">
+      <div class="who">${t.role === "user" ? "المتصل" : "المساعد"}</div>${esc(text)}${unheard}
+      ${t.interrupted ? '<span class="cutnote">قاطعه المتصل: النص المشطوب لم يُسمع</span>' : ""}</div>`;
+  }).join("");
+  const bookings = d.bookings.map(b => `<div class="card bk">
+      <div class="t"><b>${b.kind === "restaurant" ? "طاولة لـ " + b.party_size : esc(b.service_name)}</b><span class="code">#${esc(b.code)}</span></div>
+      <span>${esc(b.date)} · <bdi dir="ltr">${esc(b.time)}</bdi>${b.area ? " · " + esc(AREA[b.area] || b.area) : ""}${b.doctor_id ? " · " + esc(b.doctor_id) : ""}</span>
+      <span><bdi>${esc(b.customer_name)}</bdi> · <span dir="ltr" style="unicode-bidi:isolate">${esc(b.phone)}</span></span></div>`).join("");
+  const notes = (d.notifications || []).map(waBubble).join("");
+  const ms = (v) => v == null ? "-" : Math.round(v) + " ms";
+  document.getElementById("side").innerHTML = `
+    <h3>ملخص المكالمة</h3><div class="card"><p>${esc(c.summary || "-")}</p></div>
+    <h3>الحجز</h3>${bookings || '<div class="card"><p style="color:var(--dim)">لا يوجد</p></div>'}
+    <h3>تأكيد الحجز للعميل</h3>${notes || '<div class="card"><p style="color:var(--dim)">لم يُطلب</p></div>'}
+    <h3>تفاصيل</h3><div class="card"><dl class="kv">
+      <dt>النتيجة</dt><dd>${esc(c.outcome || c.status)}</dd>
+      <dt>اللغة</dt><dd>${esc(c.language)}</dd>
+      <dt>أول صوت (متوسط)</dt><dd>${ms(c.first_audio_ms_avg)}</dd>
+      <dt>المزودات</dt><dd>${esc(Object.values(c.providers || {}).join(" / "))}</dd>
+    </dl></div>
+    ${c.simulated ? '<p class="note">مكالمة محاكاة: صوت المتصل ولّده محاكي Twilio المدمج وعالجته مزودات mock للتعرف على الكلام والنموذج اللغوي وتحويل النص لكلام. الردود قوالب ثابتة وليست ناتج نموذج حقيقي، والأزمنة محلية لا تمثل المزودات الحقيقية.</p>' : ""}`;
+}
+
+loadHeader(); loadCalls().then(loadCall);
+setInterval(() => { loadHeader(); loadCalls(); }, 5000);
+</script>
+</body>
+</html>

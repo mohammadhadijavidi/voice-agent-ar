@@ -1,0 +1,12 @@
+services:
+  voice-agent-ar:
+    build: .
+    env_file: .env
+    ports:
+      - "8080:8080"
+    volumes:
+      - voice-agent-ar-data:/data
+    restart: unless-stopped
+
+volumes:
+  voice-agent-ar-data:

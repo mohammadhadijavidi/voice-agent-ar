@@ -1,0 +1,11 @@
+name: restaurant_booking
+profile: restaurant
+description: Emirati caller books a table for five tomorrow at 8:30 pm, confirms the read-back, gets a WhatsApp summary.
+caller: "+971501234567"
+steps:
+  - say: "السلام عليكم، ابي احجز طاولة باجر الساعة ثمان ونص بالليل"
+  - say: "بنكون خمسة اشخاص"
+  - say: "على اسم محمد الكعبي"
+  - say: "ايه صح"
+  - say: "ايه ارسله على الواتساب"
+  - say: "لا مشكور، مع السلامة"

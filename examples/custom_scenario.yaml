@@ -1,0 +1,13 @@
+# Your own simulated call. Run: voice-agent-ar simulate examples/custom_scenario.yaml
+name: custom_family_table
+profile: restaurant
+description: Family of seven wants the family section on Friday evening.
+caller: "+971501112233"
+steps:
+  - say: "السلام عليكم، ابي طاولة في قسم العوايل يوم الجمعة"
+  - say: "بنكون سبعة"
+  - say: "الساعة سبع ونص بالليل"
+  - say: "على اسم ام سعيد"
+  - say: "ايه صح"
+  - say: "لا ترسل شي، مشكور"
+  - say: "مع السلامة"
